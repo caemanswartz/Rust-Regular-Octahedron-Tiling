@@ -87,7 +87,7 @@ Figure 7a) Upper face double moves.
        \  /  \##/  \  /       
           \  /-X\  /          
              \  /             
-Figure 7b) Upper face single moves.
+Figure 7b) Upper face double moves.
 
 ### Changing Face
 If movement is not within the same face, the new face has to be calculated as well.  Since there is always a fixed number of faces in an octahedron, this is hard coded in match statements. There are four different kinds of face changes: pole movement,equatorial corners, equatorial crossing, side crossing, the former two of which are around points of distortion.
