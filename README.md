@@ -97,20 +97,20 @@ Changing faces on the poles in simple and straightforward, there are three cases
 
       \18/
       / 0\
-Figure 8a) Moving across the top pol: positive X.
+Figure 8a) Moving across the top pole along positive X.
 
 It is important to note that moving positive X for both 0 and 18 will lead to the other. This is the only case where this will happen.
 
 
       \  /+Y
       /##\
-Figure 8b) Moving around the top pol: positive Y.
+Figure 8b) Moving around the top pole along positive Y.
 
 This is the equivalent to rotating around the pole, where 1 -> 2, 2 -> 3, and 3 -> 0.
 
     -Z\  /
       /##\
-Figure 8a) Moving around the top pol: negative Z.
+Figure 8a) Moving around the top pole along negative Z.
 
 This is the equivalent to rotating around the pole but in the opposite direction.
 #### Equatorial Corners
