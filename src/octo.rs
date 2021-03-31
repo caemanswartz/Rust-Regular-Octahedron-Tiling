@@ -35,44 +35,34 @@ impl Octo {
             tile_grid
         }
     }
-    pub fn print_face(&self, face_id: usize) {
-        let face_base = usize::pow(self.face_size, 2);
-        let start = face_id * face_base;
-        if face_id <= 3 {
-            for i in start..(start + face_base) {
-                let index_id = i - face_id * face_base;
-                let h = (index_id as f32).sqrt() as usize;
-                if (index_id as f32).sqrt() % 1.0 == 0.0 {
-                    println!("");
-                    for _ in 0..(self.face_size - h - 1) {
-                        print!("     ");
-                    }
+    pub fn display(&self) {
+        for i in 0..self.face_size {
+            for j in 0..4 {
+                for _ in 0..(self.face_size - i - 1) {
+                    print!("     ");
                 }
-                let tile_type = &self.tile_grid[i].tile_type;
-                if tile_type == &TileType::Point { print!("/");}
-                else {print!(" ");}
-                print!{"{:3} ", self.tile_grid[i].tile_id};
-                if tile_type == &TileType::Point { print!("\\");}
-                else {print!(" ");}
+                for k in (usize::pow(i, 2))..(usize::pow(i + 1, 2)) {
+                    print!("{:4} ", usize::pow(self.face_size, 2) * j + k);
+                }
+                for _ in 0..(self.face_size - i - 1) {
+                    print!("     ");
+                }
             }
+            println!("");
         }
-        else {
-            for i in (start..(start + face_base)).rev() {
-                let index_id = i - face_id * face_base;
-                let h = (index_id as f32).sqrt() as usize;
-                if (index_id as f32 + 1.0).sqrt() % 1.0 == 0.0 {
-                    println!("");
-                    for _ in 0..(self.face_size - h - 1) {
-                        print!("     ");
-                    }
+        for i in (0..self.face_size).rev() {
+            for j in (4..8).rev() {
+                for _ in 0..(self.face_size - i - 1) {
+                    print!("     ");
                 }
-                let tile_type = &self.tile_grid[i].tile_type;
-                if tile_type == &TileType::Point { print!("\\");}
-                else {print!(" ");}
-                print!{"{:3} ", self.tile_grid[i].tile_id};
-                if tile_type == &TileType::Point { print!("/");}
-                else {print!(" ");}
+                for k in ((usize::pow(i, 2))..(usize::pow(i + 1, 2))).rev() {
+                    print!("{:4} ", usize::pow(self.face_size, 2) * j + k);
+                }
+                for _ in 0..(self.face_size - i - 1) {
+                    print!("     ");
+                }
             }
+            println!("");
         }
     }
     fn get_adjacent(&self, direction: Direction, tile_id: usize) -> usize {
