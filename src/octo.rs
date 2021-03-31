@@ -18,7 +18,7 @@ impl Octo {
         for i in 0..8 {
             let (mut h, mut d) = (0, true);
             for j in 0..usize::pow(face_size, 2) {
-                if j >= h * h {
+                if j >= usize::pow(h, 2) {
                     h += 1;
                 } else {
                     d = !d;
@@ -66,7 +66,7 @@ impl Octo {
         }
     }
     fn get_adjacent(&self, direction: Direction, tile_id: usize) -> usize {
-        let face_base = self.face_size * self.face_size;
+        let face_base = usize::pow(self.face_size, 2);
         let face_id = tile_id / face_base;
         let orientation = match face_id {
             _ if face_id > 3 => -direction,
