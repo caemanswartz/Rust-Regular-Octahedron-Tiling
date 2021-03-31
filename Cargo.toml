@@ -1,0 +1,7 @@
+[package]
+name = "octo_sphere"
+version = "0.1.0"
+authors = ["caemanswartz"]
+edition = "2018"
+
+[dependencies]
