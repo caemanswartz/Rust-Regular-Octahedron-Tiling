@@ -1,4 +1,3 @@
-
 #[cfg(test)]
 #[path = "./octo_tests.rs"]
 mod octo_tests;
@@ -36,7 +35,6 @@ impl Octo {
             tile_grid
         }
     }
-
     pub fn print_face(&self, face_id: usize) {
         let face_base = usize::pow(self.face_size, 2);
         let start = face_id * face_base;
@@ -77,7 +75,6 @@ impl Octo {
             }
         }
     }
-
     fn get_adjacent(&self, direction: Direction, tile_id: usize) -> usize {
         let face_base = self.face_size * self.face_size;
         let face_id = tile_id / face_base;
@@ -100,15 +97,17 @@ impl Octo {
                         1 => 3* face_base,
                         _ => 2 * face_base
                     },
-                    _ if (index_id as f32 + 1.0).sqrt() % 1.0 == 0.0 => face_base * match face_id {
-                        _ if face_id == 3 => 0,
-                        _ if face_id == 7 => 4,
-                        _ => face_id + 1
+                    _ if (index_id as f32 + 1.0).sqrt() % 1.0 == 0.0 =>
+                        face_base * match face_id {
+                            _ if face_id == 3 => 0,
+                            _ if face_id == 7 => 4,
+                            _ => face_id + 1
                     } + usize::pow(h - 1, 2),
-                    _ if (index_id as f32).sqrt() % 1.0 == 0.0 => face_base * match face_id {
-                        _ if face_id == 0 => 3,
-                        _ if face_id == 4 => 7,
-                        _ => face_id - 1
+                    _ if (index_id as f32).sqrt() % 1.0 == 0.0 =>
+                        face_base * match face_id {
+                            _ if face_id == 0 => 3,
+                            _ if face_id == 4 => 7,
+                            _ => face_id - 1
                     } + usize::pow(h, 2) - 1,
                     _ => tile_id - 2 * h
                 },
@@ -126,7 +125,8 @@ impl Octo {
                             7 => 4,
                             _ => face_id + 1
                         },
-                        _ if (index_id as f32 + 1.0).sqrt() % 1.0 == 0.0 => face_base * match face_id {
+                        _ if (index_id as f32 + 1.0).sqrt() % 1.0 == 0.0 =>
+                            face_base * match face_id {
                                 3 => 0,
                                 7 => 4,
                                 _ => face_id + 1
@@ -134,7 +134,8 @@ impl Octo {
                         _ => tile_id + 1,
                     },
                     _ => match index_id {
-                        _ if (index_id as f32 + 2.0).sqrt() % 1.0 == 0.0 => face_base * match face_id {
+                        _ if (index_id as f32 + 2.0).sqrt() % 1.0 == 0.0 =>
+                            face_base * match face_id {
                                 3 => 0,
                                 7 => 4,
                                 _ => (face_id + 1)
@@ -146,7 +147,8 @@ impl Octo {
                 match self.tile_grid[tile_id].tile_type {
                     TileType::Flat => tile_id - 1,
                     _ => match index_id {
-                        _ if index_id == usize::pow(self.face_size - 1,2) => face_base * match face_id {
+                        _ if index_id == usize::pow(self.face_size - 1,2) =>
+                            face_base * match face_id {
                                 0 => 4,
                                 4 => 0,
                                 _ => 8 - face_id
@@ -176,7 +178,8 @@ impl Octo {
                                 7 => 4,
                                 _ => face_id + 1
                             } + index_id + 1,
-                        _ if h == self.face_size - 1 => (8 - face_id) * face_base - index_id + usize::pow(h, 2) - 3,
+                        _ if h == self.face_size - 1 =>
+                            (8 - face_id) * face_base - index_id + usize::pow(h, 2) - 3,
                         _ => tile_id + 2 * (h + 1) + 2
                     },
                     _ => tile_id + 1
