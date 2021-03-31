@@ -161,8 +161,8 @@ Figure 11b) Moving across upper face edge over side, other direction.
 Figure 11c) Moving across upper face edge over vertex.
 
 
-         /  \    ->    /  \   
-      /  \-Z/  \ -> /  \##/  \
+         /  \    <-    /  \   
+      /  \-Z/  \ <- /  \##/  \
 Figure 11d) Moving across upper face edge over vertex, other direction.
 ## Code Testing
 There are three tests that each check movement in every direction for all tiles of octahedrons of size 1, 2 and 3, respectively.  With the algorithms the use of squares, multiplication, and addition, the tests give confidence in the algorithms correctness for anything larger.
