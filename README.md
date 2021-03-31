@@ -19,14 +19,14 @@ Normally when spheres are tiled they are done using square and mapped onto a cyl
     \5/6\7/
 Figure 1) A hexagon made from equilateral triangles.
 
-Here we can see that moving through the triangles from 1 to 7 lies on the same axis. Similarly, 5 and 3 also sit on the same, albeit different, axis. Additionally, the numbers above and below one another are also along a third axis, each column being parallel to the others. All three of these axii are the same as those that would be in any hexagonal tiling. Furthermore, this hexagon can easily be made a triangle by adding a few more tiles, as shown below.
+Here we can see that moving through the triangles from 1 to 7 lies on the same axis. Similarly, 5 and 3 also sit on the same, albeit different, axis. Additionally, the numbers above and below one another are also along a third axis, each column being parallel to the others. All three of these axes are the same as those that would be in any hexagonal tiling. Furthermore, this hexagon can easily be made a triangle by adding a few more tiles, as shown below.
 
         /0\
       /1\2/3\
     /4\5/6\7/8\
 Figure 2) A equilateral triangle subdivided into equilateral triangles.
 
-This triangle can then form one of the eight faces of an octahedron. While this isn't a perfect mapping, it has some niceties in regards to local movement along the axii. Each corner vertex loses two triangles in the hexagon that would form around it (note that this actually forms a square at the points of distortion) but since they are the two triangles that don't correlate with axial movement, the can be safely disregarded.
+This triangle can then form one of the eight faces of an octahedron. While this isn't a perfect mapping, it has some niceties in regards to local movement along the axes. Each corner vertex loses two triangles in the hexagon that would form around it (note that this actually forms a square at the points of distortion) but since they are the two triangles that don't correlate with axial movement, the can be safely disregarded.
 ## The Octahedron
 The data structure of the polyhedron is simply a vector of tiles, with each index being a unique id calculated from face id, face size, and index id.  The construction takes a size that defines the face length in the number of tile sides, where a value of 1 would have faces being a single triangle. The algorithm just constructs all eight faces the same but pretends that the last four are flipped.  This creates pairs of faces as seen here:
 
@@ -47,7 +47,7 @@ This inversion of the lower faces can also be seen as bending the array in half,
 ## Tile Movement
 The algorithm for tile movement is a series of conditional checks for special cases of face change and a base case for when the movement remains inside the same face.
 ### Base Case
-Basic directional movement within a face is done by operating on index locations.  There are algorithms for handling movement based on three axii, labeled X, Y, and Z, in both positive and negative directions. The axii are named clockwise starting with Positive X being perpendicular to the equator, which is roughly north. The axes of movement are as shown below:
+Basic directional movement within a face is done by operating on index locations.  There are algorithms for handling movement based on three axes, labeled X, Y, and Z, in both positive and negative directions. The axes are named clockwise starting with Positive X being perpendicular to the equator, which is roughly north. The axes of movement are as shown below:
 
              /  \             
           /  \+X/  \          
@@ -104,7 +104,7 @@ It is important to note that moving positive X for both 0 and 18 will lead to th
 
       \  /+Y
       /##\
-Figure 8b) Moving around the top pole along positive Y.
+Figure 8b) Moving around the top pol along positive Y.
 
 This is the equivalent to rotating around the pole, where 1 -> 2, 2 -> 3, and 3 -> 0.
 
@@ -152,10 +152,18 @@ The last face change is over the edge of one triangle to the other. This can hap
       /  \  /##\ -> /+Y\  /  \
 Figure 11a) Moving across upper face edge over side.
 
+         /-Y\    <-    /  \   
+      /  \  /-Z\ <- /##\  /  \
+Figure 11b) Moving across upper face edge over side, other direction.
+
          /  \    ->    /  \   
       /  \##/  \ -> /  \+Y/  \
-Figure 11b) Moving across upper face edge over vertex.
+Figure 11c) Moving across upper face edge over vertex.
 
+
+         /  \    ->    /  \   
+      /  \-Z/  \ -> /  \##/  \
+Figure 11d) Moving across upper face edge over vertex, other direction.
 ## Code Testing
 There are three tests that each check movement in every direction for all tiles of octahedrons of size 1, 2 and 3, respectively.  With the algorithms the use of squares, multiplication, and addition, the tests give confidence in the algorithms correctness for anything larger.
 ## Future Plans
