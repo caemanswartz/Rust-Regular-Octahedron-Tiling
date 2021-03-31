@@ -1,3 +1,4 @@
+use std::ops::Neg;
 #[allow(dead_code)]
 #[derive(Clone,Debug,PartialEq)]
 pub enum TileType {
@@ -7,12 +8,25 @@ pub enum TileType {
 #[allow(dead_code)]
 #[derive(Clone,Debug,PartialEq)]
 pub enum Direction {
-    PlusX,
-    PlusY,
-    PlusZ,
-    MinusX,
-    MinusY,
-    MinusZ
+    PosX,
+    PosY,
+    PosZ,
+    NegX,
+    NegY,
+    NegZ
+}
+impl Neg for Direction {
+    type Output = Self;
+    fn neg(self) -> Self::Output {
+        match self {
+            Direction::PosX => Direction::NegX,
+            Direction::PosY => Direction::NegY,
+            Direction::PosZ => Direction::NegZ,
+            Direction::NegX => Direction::PosX,
+            Direction::NegY => Direction::PosY,
+            Direction::NegZ => Direction::PosZ
+        }
+    }
 }
 #[derive(Clone,Debug,PartialEq)]
 pub struct Tile {
