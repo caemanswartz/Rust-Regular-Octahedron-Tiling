@@ -1,5 +1,5 @@
 # What is Octo Sphere?
-The purpose of this code is to dynamically tile a sphere using an octahedron whose faces are subdivided into equilateral triangles of equal area in such a way that allows adjacent tile movement that cirumnavigate the sphere in all directions.
+The purpose of this code is to dynamically tile a sphere using an octahedron whose faces are subdivided into equilateral triangles of equal area in such a way that allows adjacent tile movement that can cirumnavigate the sphere and end up at the origin if chained.
 ## Table of Contents
 1. [Program Motivation](#Program-Motivation)
 2. [The Octahedron](#The-Octahedron)
@@ -13,7 +13,7 @@ The purpose of this code is to dynamically tile a sphere using an octahedron who
 4. [Code Testing](#Code-Testing)
 4. [Future Plans](#Future-Plans)
 ## Program Motivation
-Normally when spheres are tiled they are done using square and mapped onto a cylinder. This has been the common approach for decades until recently. Modern tiling of spheres has moved from square tiles to hexagons, as it allows more degrees of equidistant movement.  The problem with tiling a sphere with equal sized hexagons is that it simply can't be done, most programs tile a cube with hexagons, leaving the corners as pentagons, and map this to a sphere. What if one wants all the tiles the same shape and still wants to retain the same axial of movement? Consider a hexagon as the following six equilateral triangles:
+The classic approach to tiling spheres is done using square and mapped onto a cylinder. This has been the common approach for decades until recently. Modern tiling of spheres has moved from square tiles to hexagons, as it allows more degrees of equidistant movement.  The problem with tiling a sphere with equal sized hexagons is that it simply can't be done, most programs tile a cube with hexagons, leaving the corners as pentagons, and map this to a sphere. What if one wants all the tiles the same shape and still wants to retain the same axial movements? Consider a hexagon as the following six equilateral triangles:
 
     /1\2/3\
     \5/6\7/
@@ -28,7 +28,7 @@ Figure 2) A equilateral triangle subdivided into equilateral triangles.
 
 This triangle can then form one of the eight faces of an octahedron. While this isn't a perfect mapping, it has some niceties in regards to local movement along the axes. Each corner vertex loses two triangles in the hexagon that would form around it (note that this actually forms a square at the points of distortion) but since they are the two triangles that don't correlate with axial movement, the can be safely disregarded.
 ## The Octahedron
-The data structure of the polyhedron is simply a vector of tiles, with each index being a unique id calculated from face id, face size, and index id.  The construction takes a size that defines the face length in the number of tile sides, where a value of 1 would have faces being a single triangle. The algorithm just constructs all eight faces the same but pretends that the last four are flipped.  This creates pairs of faces as seen here:
+The data structure of the polyhedron is simply a vector of tiles, with each one having a unique id calculated from which face, the size of the face, and index position on the face.  The construction takes a size that defines the face length in the number of tile sides, where a value of 1 would have faces being a single triangle. The algorithm just constructs all eight faces the same but pretends that the last four are flipped.  This creates pairs of faces as seen here:
 
     /0\ /1\ /2\ /3\ -> /0\
     \7/ \6/ \5/ \4/ -> \7/ ...
@@ -152,7 +152,7 @@ The last face change is over the edge of one triangle to the other. This can hap
       /  \  /##\ -> /+Y\  /  \
 Figure 11a) Moving across upper face edge over side.
 
-         /-Y\    <-    /  \   
+         /+X\    <-    /  \   
       /  \  /-Z\ <- /##\  /  \
 Figure 11b) Moving across upper face edge over side, other direction.
 
