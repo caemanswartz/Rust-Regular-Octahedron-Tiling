@@ -687,105 +687,48 @@ fn test_step_size_3() -> Result <(),String> {
     assert_eq!(octo.step((71, Direction::NegZ)), (35, Direction::NegZ));
     Ok(())
 }
-#[test]
-fn test_walk_x_pos() -> Result <(),String> {
-    let size = 10;
+fn auto_walk(size: usize) -> Result <(),String> {
     let octo = Octo::new(size);
-    for i in 0..(usize::pow(size, 2) * 8) {
-        let start_tile = i;
-        let start_direction = Direction::PosX;
-        println!("start: {} {:?}", start_tile, start_direction);
-        let mut current = octo.step((start_tile, start_direction.clone()));
-        while current.0 != start_tile {
-            println!("{:?}",current);
-            current = octo.step(current);
+    for d in 0..6 {
+        for i in 0..(usize::pow(size, 2) * 8) {
+            let start_tile = i;
+            let start_direction = match d {
+                0 => Direction::PosX,
+                1 => Direction::PosY,
+                2 => Direction::PosZ,
+                3 => Direction::NegX,
+                4 => Direction::NegY,
+                _ => Direction::NegZ,
+            };
+            println!("start: {} {:?}", start_tile, start_direction);
+            let mut current = octo.step((start_tile, start_direction.clone()));
+            while current.0 != start_tile {
+                println!("step {}:{:?}", i, current);
+                current = octo.step(current);
+            }
+            assert_eq!(current, (start_tile, start_direction));
         }
-        assert_eq!(current, (start_tile, start_direction));
     }
     Ok(())
 }
 #[test]
-fn test_walk_x_neg() -> Result <(),String> {
-    let size = 10;
-    let octo = Octo::new(size);
-    for i in 0..(usize::pow(size, 2) * 8) {
-        let start_tile = i;
-        let start_direction = Direction::NegX;
-        println!("start: {} {:?}", start_tile, start_direction);
-        let mut current = octo.step((start_tile, start_direction.clone()));
-        while current.0 != start_tile {
-            println!("{:?}",current);
-            current = octo.step(current);
-        }
-        assert_eq!(current, (start_tile, start_direction));
-    }
+fn test_walk_size_1() -> Result <(),String> {
+    assert_eq!(auto_walk(1),Ok(()));
     Ok(())
-}
-#[test]
-fn test_walk_y_pos() -> Result <(),String> {
-    let size = 10;
-    let octo = Octo::new(size);
-    for i in 0..(usize::pow(size, 2) * 8) {
-        let start_tile = i;
-        let start_direction = Direction::PosY;
-        println!("start: {} {:?}", start_tile, start_direction);
-        let mut current = octo.step((start_tile, start_direction.clone()));
-        while current.0 != start_tile {
-            println!("{:?}",current);
-            current = octo.step(current);
-        }
-        assert_eq!(current, (start_tile, start_direction));
-    }
+}#[test]
+fn test_walk_size_2() -> Result <(),String> {
+    assert_eq!(auto_walk(2),Ok(()));
     Ok(())
-}
-#[test]
-fn test_walk_y_neg() -> Result <(),String> {
-    let size = 10;
-    let octo = Octo::new(size);
-    for i in 0..(usize::pow(size, 2) * 8) {
-        let start_tile = i;
-        let start_direction = Direction::NegY;
-        println!("start: {} {:?}", start_tile, start_direction);
-        let mut current = octo.step((start_tile, start_direction.clone()));
-        while current.0 != start_tile {
-            println!("{:?}",current);
-            current = octo.step(current);
-        }
-        assert_eq!(current, (start_tile, start_direction));
-    }
+}#[test]
+fn test_walk_size_3() -> Result <(),String> {
+    assert_eq!(auto_walk(3),Ok(()));
     Ok(())
-}
-#[test]
-fn test_walk_z_pos() -> Result <(),String> {
-    let size = 10;
-    let octo = Octo::new(size);
-    for i in 0..(usize::pow(size, 2) * 8) {
-        let start_tile = i;
-        let start_direction = Direction::PosZ;
-        println!("start: {} {:?}", start_tile, start_direction);
-        let mut current = octo.step((start_tile, start_direction.clone()));
-        while current.0 != start_tile {
-            println!("{:?}",current);
-            current = octo.step(current);
-        }
-        assert_eq!(current, (start_tile, start_direction));
-    }
+}#[test]
+fn test_walk_size_4() -> Result <(),String> {
+    assert_eq!(auto_walk(4),Ok(()));
     Ok(())
-}
-#[test]
-fn test_walk_z_neg() -> Result <(),String> {
-    let size = 10;
-    let octo = Octo::new(size);
-    for i in 0..(usize::pow(size, 2) * 8) {
-        let start_tile = i;
-        let start_direction = Direction::NegZ;
-        println!("start: {} {:?}", start_tile, start_direction);
-        let mut current = octo.step((start_tile, start_direction.clone()));
-        while current.0 != start_tile {
-            println!("{:?}",current);
-            current = octo.step(current);
-        }
-        assert_eq!(current, (start_tile, start_direction));
-    }
+}#[test]
+fn test_walk_size_5() -> Result <(),String> {
+    assert_eq!(auto_walk(5),Ok(()));
     Ok(())
 }
