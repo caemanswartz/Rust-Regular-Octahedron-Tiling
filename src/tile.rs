@@ -1,4 +1,7 @@
-use std::ops::Neg;
+use std::ops::{
+    Neg,
+    Not
+};
 #[allow(dead_code)]
 #[derive(Clone,Debug,PartialEq)]
 pub enum TileType {
@@ -25,6 +28,19 @@ impl Neg for Direction {
             Direction::NegX => Direction::PosX,
             Direction::NegY => Direction::PosY,
             Direction::NegZ => Direction::PosZ
+        }
+    }
+}
+impl Not for Direction {
+    type Output = Self;
+    fn not(self) -> Self::Output {
+        match self {
+            Direction::PosX => Direction::NegX,
+            Direction::PosY => Direction::PosZ,
+            Direction::PosZ => Direction::PosY,
+            Direction::NegX => Direction::PosX,
+            Direction::NegY => Direction::NegZ,
+            Direction::NegZ => Direction::NegY
         }
     }
 }

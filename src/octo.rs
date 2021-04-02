@@ -65,40 +65,52 @@ impl Octo {
             println!("");
         }
     }
-    fn get_adjacent(&self, direction: Direction, tile_id: usize) -> usize {
+    pub fn get_adjacent(&self, vector: (usize, Direction)) -> (usize, Direction) {
         let face_base = usize::pow(self.face_size, 2);
+        let tile_id = vector.0;
         let face_id = tile_id / face_base;
-        let orientation = match face_id {
-            _ if face_id > 3 => -direction,
-            _ => direction
+        let mut orientation = vector.1;
+        let correction = match face_id {
+            _ if face_id > 3 => -orientation.clone(),
+            _ => orientation.clone()
         };
         let index_id = tile_id - face_id * face_base;
         let h = (index_id as f32).sqrt() as usize;
-        match orientation {
+        (match correction {
             Direction::PosX =>
                 match index_id {
-                    0 => match face_id {
-                        7 => 5 * face_base,
-                        6 => 4 * face_base,
-                        5 => 7 * face_base,
-                        4 => 6 * face_base,
-                        3 => face_base,
-                        2 => 0,
-                        1 => 3* face_base,
-                        _ => 2 * face_base
+                    0 => {
+                        orientation = -orientation;
+                        face_base * match face_id {
+                            5 => 7,
+                            4 => 6,
+                            1 => 3,
+                            0 => 2,
+                            _ => face_id - 2
+                        }
                     },
-                    _ if (index_id as f32 + 1.0).sqrt() % 1.0 == 0.0 =>
+                    _ if (index_id as f32 + 1.0).sqrt() % 1.0 == 0.0 => {
+                        orientation = match orientation {
+                            Direction::PosX => Direction::PosY,
+                            _ => Direction::NegY
+                        };
                         face_base * match face_id {
                             _ if face_id == 3 => 0,
                             _ if face_id == 7 => 4,
                             _ => face_id + 1
-                    } + usize::pow(h - 1, 2),
-                    _ if (index_id as f32).sqrt() % 1.0 == 0.0 =>
+                        } + usize::pow(h - 1, 2)
+                    },
+                    _ if index_id == usize::pow(h, 2) => {
+                        orientation = match orientation {
+                            Direction::PosX => Direction::NegZ,
+                            _ => Direction::PosZ
+                        };
                         face_base * match face_id {
                             _ if face_id == 0 => 3,
                             _ if face_id == 4 => 7,
                             _ => face_id - 1
-                    } + usize::pow(h, 2) - 1,
+                        } + usize::pow(h, 2) - 1
+                    },
                     _ => tile_id - 2 * h
                 },
             Direction::NegX => 
@@ -110,26 +122,33 @@ impl Octo {
             Direction::PosY => 
                 match self.tile_grid[tile_id].tile_type {
                     TileType::Point => match index_id {
-                        0 => face_base * match face_id {
-                            3 => 0,
-                            7 => 4,
-                            _ => face_id + 1
-                        },
-                        _ if (index_id as f32 + 1.0).sqrt() % 1.0 == 0.0 =>
+                        0 => {
+                            orientation = !orientation;
                             face_base * match face_id {
                                 3 => 0,
                                 7 => 4,
                                 _ => face_id + 1
-                            } + usize::pow(h, 2),
+                            }
+                        },
+                        _ if index_id == usize::pow(h + 1, 2) - 1 => {
+                            orientation = !orientation;
+                            face_base * match face_id {
+                                    3 => 0,
+                                    7 => 4,
+                                    _ => face_id + 1
+                                } + usize::pow(h, 2)
+                            },
                         _ => tile_id + 1,
                     },
                     _ => match index_id {
-                        _ if (index_id as f32 + 2.0).sqrt() % 1.0 == 0.0 =>
+                        _ if index_id == usize::pow(h + 1, 2) - 2 => {
+                            orientation = !orientation;
                             face_base * match face_id {
-                                3 => 0,
-                                7 => 4,
-                                _ => (face_id + 1)
-                            } + usize::pow(h, 2) + 1,
+                                    3 => 0,
+                                    7 => 4,
+                                    _ => (face_id + 1)
+                                } + usize::pow(h, 2) + 1
+                        },
                         _ => tile_id - 2 * h + 2
                     }
                 },
@@ -137,39 +156,56 @@ impl Octo {
                 match self.tile_grid[tile_id].tile_type {
                     TileType::Flat => tile_id - 1,
                     _ => match index_id {
-                        _ if index_id == usize::pow(self.face_size - 1,2) =>
+                        _ if index_id == usize::pow(self.face_size - 1,2) => {
                             face_base * match face_id {
-                                0 => 4,
-                                4 => 0,
-                                _ => 8 - face_id
-                            } + usize::pow(h, 2),
-                        _ if h == self.face_size - 1 =>
-                            face_base * (8 - face_id) - index_id + usize::pow(self.face_size - 1, 2) + 1,
-                        _ if index_id == usize::pow(h,2) => face_base * match face_id {
-                                0 => 3,
-                                4 => 7,
-                                _ => face_id - 1,
-                            } + usize::pow(h + 1, 2) + 2 * (h + 1),
+                                    0 => 4,
+                                    4 => 0,
+                                    _ => 8 - face_id
+                                } + usize::pow(h, 2)
+                        },
+                        _ if h == self.face_size - 1 => {
+                            face_base * (8 - face_id) - index_id + usize::pow(self.face_size - 1, 2) + 1
+                        },
+                        _ if index_id == usize::pow(h,2) => {
+                            orientation = match orientation {
+                                Direction::NegY => Direction::NegX,
+                                _ => Direction::PosX
+                            };
+                            face_base * match face_id {
+                                    0 => 3,
+                                    4 => 7,
+                                    _ => face_id - 1,
+                                } + usize::pow(h + 1, 2) + 2 * (h + 1)
+                        },
                         _ => tile_id + 2 * (h + 1) - 2
                     }
                 },
             Direction::PosZ => 
                 match self.tile_grid[tile_id].tile_type {
                     TileType::Point => match index_id {
-                        _ if index_id == face_base - 1 => face_base * match face_id {
-                                0 => 6,
-                                3 => 7,
-                                7 => 3,
-                                _ if face_id > 3 => 6 - face_id,
-                                _ => 6 - face_id
-                            } + usize::pow(h, 2) + 2 * h,
-                        _ if index_id == usize::pow(h + 1, 2) - 1 => face_base * match face_id {
-                                3 => 0,
-                                7 => 4,
-                                _ => face_id + 1
-                            } + index_id + 1,
-                        _ if h == self.face_size - 1 =>
-                            (8 - face_id) * face_base - index_id + usize::pow(h, 2) - 3,
+                        _ if index_id == face_base - 1 => {
+                            face_base * match face_id {
+                                    0 => 6,
+                                    3 => 7,
+                                    7 => 3,
+                                    _ if face_id > 3 => 6 - face_id,
+                                    _ => 6 - face_id
+                                } + usize::pow(h, 2) + 2 * h
+                        },
+                        _ if index_id == usize::pow(h + 1, 2) - 1 => {
+                            orientation = match orientation {
+                                Direction::PosZ => Direction::NegX,
+                                _ => Direction::PosX
+                            };
+                            face_base * match face_id {
+                                    3 => 0,
+                                    7 => 4,
+                                    _ => face_id + 1
+                                } + index_id + 1
+                        },
+                        _ if h == self.face_size - 1 => {
+                            (8 - face_id) * face_base - index_id + usize::pow(h, 2) - 3
+                        },
                         _ => tile_id + 2 * (h + 1) + 2
                     },
                     _ => tile_id + 1
@@ -177,27 +213,36 @@ impl Octo {
             Direction::NegZ => 
                 match self.tile_grid[tile_id].tile_type {
                     TileType::Point => match index_id {
-                        0 => face_base * match face_id {
-                                0 => 3,
-                                4 => 7,
-                                _ => face_id - 1
-                            },
-                        _ if index_id == usize::pow(h,2) => face_base * match face_id {
-                                0 => 3,
-                                4 => 7,
-                                _ => face_id - 1
-                            } + usize::pow(h + 1, 2) - 1,
+                        0 => {
+                            orientation = !orientation;
+                            face_base * match face_id {
+                                    0 => 3,
+                                    4 => 7,
+                                    _ => face_id - 1
+                                }
+                        },
+                        _ if index_id == usize::pow(h,2) => {
+                            orientation = !orientation;
+                            face_base * match face_id {
+                                    0 => 3,
+                                    4 => 7,
+                                    _ => face_id - 1
+                                } + usize::pow(h + 1, 2) - 1
+                        },
                         _ => tile_id - 1
                     },
                     TileType::Flat => match index_id {
-                        _ if index_id == usize::pow(h, 2) + 1 => face_base * match face_id {
-                            4 => 7,
-                            0 => 3,
-                            _ => face_id - 1
-                        } + usize::pow(h, 2) + 2 * (h - 1) + 1,
+                        _ if index_id == usize::pow(h, 2) + 1 => {
+                            orientation = !orientation;
+                            face_base * match face_id {
+                                4 => 7,
+                                0 => 3,
+                                _ => face_id - 1
+                            } + usize::pow(h, 2) + 2 * (h - 1) + 1
+                        },
                         _ => tile_id - 2 * h - 2
                     }
                 }
-        }
+        }, orientation)
     }
 }
