@@ -89,7 +89,7 @@ impl Octo {
                             _ => face_id - 2
                         }
                     },
-                    _ if (index_id as f32 + 1.0).sqrt() % 1.0 == 0.0 => {
+                    _ if index_id == usize::pow(h + 1, 2) - 1 => {
                         orientation = match orientation {
                             Direction::PosX => Direction::PosY,
                             _ => Direction::NegY

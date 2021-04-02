@@ -4,12 +4,6 @@ use std::ops::{
 };
 #[allow(dead_code)]
 #[derive(Clone,Debug,PartialEq)]
-pub enum TileType {
-    Point,
-    Flat
-}
-#[allow(dead_code)]
-#[derive(Clone,Debug,PartialEq)]
 pub enum Direction {
     PosX,
     PosY,
@@ -43,6 +37,12 @@ impl Not for Direction {
             Direction::NegZ => Direction::NegY
         }
     }
+}
+#[allow(dead_code)]
+#[derive(Clone,Debug,PartialEq)]
+pub enum TileType {
+    Point,
+    Flat
 }
 #[derive(Clone,Debug,PartialEq)]
 pub struct Tile {
