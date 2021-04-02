@@ -65,7 +65,7 @@ impl Octo {
             println!("");
         }
     }
-    pub fn get_adjacent(&self, vector: (usize, Direction)) -> (usize, Direction) {
+    pub fn step(&self, vector: (usize, Direction)) -> (usize, Direction) {
         let face_base = usize::pow(self.face_size, 2);
         let tile_id = vector.0;
         let face_id = tile_id / face_base;
@@ -95,8 +95,8 @@ impl Octo {
                             _ => Direction::NegY
                         };
                         face_base * match face_id {
-                            _ if face_id == 3 => 0,
-                            _ if face_id == 7 => 4,
+                            3 => 0,
+                            7 => 4,
                             _ => face_id + 1
                         } + usize::pow(h - 1, 2)
                     },

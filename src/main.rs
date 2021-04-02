@@ -10,10 +10,10 @@ fn main() {
         let start_tile = i;
         let start_direction = Direction::NegZ;
         println!("start: {} {:?}", start_tile, start_direction);
-        let mut current = octo.get_adjacent((start_tile, start_direction.clone()));
+        let mut current = octo.step((start_tile, start_direction.clone()));
         while current.0 != start_tile {
             println!("{:?}",current);
-            current = octo.get_adjacent(current);
+            current = octo.step(current);
         }
         assert_eq!(current, (start_tile, start_direction));
     }
