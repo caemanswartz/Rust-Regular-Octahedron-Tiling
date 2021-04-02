@@ -8,7 +8,7 @@ fn main() {
     octo.display();
     for i in 0..(usize::pow(size, 2) * 8) {
         let start_tile = i;
-        let start_direction = Direction::PosX;
+        let start_direction = Direction::NegZ;
         println!("start: {} {:?}", start_tile, start_direction);
         let mut current = octo.get_adjacent((start_tile, start_direction.clone()));
         while current.0 != start_tile {

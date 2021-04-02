@@ -721,3 +721,71 @@ fn test_walk_x_neg() -> Result <(),String> {
     }
     Ok(())
 }
+#[test]
+fn test_walk_y_pos() -> Result <(),String> {
+    let size = 10;
+    let octo = Octo::new(size);
+    for i in 0..(usize::pow(size, 2) * 8) {
+        let start_tile = i;
+        let start_direction = Direction::PosY;
+        println!("start: {} {:?}", start_tile, start_direction);
+        let mut current = octo.get_adjacent((start_tile, start_direction.clone()));
+        while current.0 != start_tile {
+            println!("{:?}",current);
+            current = octo.get_adjacent(current);
+        }
+        assert_eq!(current, (start_tile, start_direction));
+    }
+    Ok(())
+}
+#[test]
+fn test_walk_y_neg() -> Result <(),String> {
+    let size = 10;
+    let octo = Octo::new(size);
+    for i in 0..(usize::pow(size, 2) * 8) {
+        let start_tile = i;
+        let start_direction = Direction::NegY;
+        println!("start: {} {:?}", start_tile, start_direction);
+        let mut current = octo.get_adjacent((start_tile, start_direction.clone()));
+        while current.0 != start_tile {
+            println!("{:?}",current);
+            current = octo.get_adjacent(current);
+        }
+        assert_eq!(current, (start_tile, start_direction));
+    }
+    Ok(())
+}
+#[test]
+fn test_walk_z_pos() -> Result <(),String> {
+    let size = 10;
+    let octo = Octo::new(size);
+    for i in 0..(usize::pow(size, 2) * 8) {
+        let start_tile = i;
+        let start_direction = Direction::PosZ;
+        println!("start: {} {:?}", start_tile, start_direction);
+        let mut current = octo.get_adjacent((start_tile, start_direction.clone()));
+        while current.0 != start_tile {
+            println!("{:?}",current);
+            current = octo.get_adjacent(current);
+        }
+        assert_eq!(current, (start_tile, start_direction));
+    }
+    Ok(())
+}
+#[test]
+fn test_walk_z_neg() -> Result <(),String> {
+    let size = 10;
+    let octo = Octo::new(size);
+    for i in 0..(usize::pow(size, 2) * 8) {
+        let start_tile = i;
+        let start_direction = Direction::NegZ;
+        println!("start: {} {:?}", start_tile, start_direction);
+        let mut current = octo.get_adjacent((start_tile, start_direction.clone()));
+        while current.0 != start_tile {
+            println!("{:?}",current);
+            current = octo.get_adjacent(current);
+        }
+        assert_eq!(current, (start_tile, start_direction));
+    }
+    Ok(())
+}
