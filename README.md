@@ -1,13 +1,13 @@
 # What is Octo Sphere?
-The purpose of this code is to dynamically tile a sphere using an octahedron whose faces are subdivided into equilateral triangles of equal area in such a way that allows adjacent tile movement that can circumnavigate the sphere and end up at the origin if chained.
-## Table of Contents
+The purpose of this code is to dynamically tile a sphere using an octahedron whose faces are subdivided into equilateral triangles of equal area in such a way that allows adjacent tile movement that can circumnavigate the sphere and end up at the origin if chained. This document contains an induction on the motivation behind the project, detailed analysis of space and movement within it, implemented unit tests, and plans for further improvement.
+### Table of Contents
 1. [Program Motivation](#Program-Motivation)
 2. [The Octahedron](#The-Octahedron)
 3. [Local Movement](#Local-Movement)
     - [Base Case](#Base-Case)
     - [Changing Face](#Changing-Face)
        - [Polar Corners](#Polar-Corners)
-       - [Equatorial Corners](#Equatorial-Corner)
+       - [Equatorial Corners](#Equatorial-Corners)
        - [Equatorial Crossing](#Equatorial-Crossing)
        - [Side Crossing](#Side-Crossing)
 4. [Walking the Octahedron](#Walking-the-Octahedron)
@@ -19,14 +19,14 @@ The purpose of this code is to dynamically tile a sphere using an octahedron who
     - [Step Tests](#Step-Tests)
     - [Walk Tests](#Walk-Tests)
 6. [Future Plans](#Future-Plans)
-## Program Motivation
+## 1. Program Motivation
 The classic approach to tiling spheres is done using square tiles and mapped onto a cylinder as this allows east-west wrapping. This has been the common approach for decades until recently. More modern spherical tilings have moved from square tiles to hexagons, as it allows more degrees of equidistant movement. The problem with tiling a sphere with equal sized hexagons is that it simply can't be done. Most programs tile a cube with hexagons, leaving the corners as pentagons, and map this to a sphere. What if one wants all the tiles the same shape and still wants to retain the hexagonal axes? Consider a hexagon as the following six equilateral triangles:
 
     /1\2/3\
     \5/6\7/
 Figure 1.1) A hexagon made from equilateral triangles.
 
-Here we can see that moving through the triangles from 1 to 7 lies on the same axis. Similarly, 5 and 3 also sit on the same, albeit different, axis. Additionally, the numbers above and below one another are also along a third axis, each column being parallel to the others. All three of these axes are the same as those that would be in any hexagonal tiling. Furthermore, this hexagon can easily be made a triangle by adding a few more tiles, as shown in the next figure.
+Here we can see that moving through the triangles from 1 to 7 lies on the same axis. Similarly, 5 and 3 also sit on the same, albeit different, axis. Additionally, the numbers above and below one another are also along a third axis, each column being parallel to the others. All three of these axes are the same as those that would be in any hexagonal tiling. Furthermore, this hexagon can easily be made into a triangle by adding a few more tiles, as shown in the next figure.
 
         /0\
       /1\2/3\
@@ -34,7 +34,7 @@ Here we can see that moving through the triangles from 1 to 7 lies on the same a
 Figure 1.1) A equilateral triangle subdivided into equilateral triangles.
 
 This triangle can then form one of the eight faces of an octahedron. While this isn't a perfect mapping, it has some niceties in regards to local movement along the axes. Each corner vertex loses two triangles in the hexagon that would form around it (note that this actually forms a square at the points of distortion) but since they are the two triangles that don't correlate with the axial movements, they can be safely disregarded.
-## The Octahedron
+## 2. The Octahedron
 The data structure of this polyhedron is simply a vector of tiles, with each one having a unique id calculated from which face in lies on, the number of tiles on each face, and index position on the face it sits. The construction takes a size that defines the face length in the number of tile sides, where a value of 1 would have faces being a single triangle. The movement algorithm constructs all eight faces the same but pretends that the last four are flipped. This creates pairs of faces as seen here:
 
     /0\ /1\ /2\ /3\ → /0\
@@ -53,7 +53,7 @@ This inversion of the lower faces can also be seen as bending the array in half,
 
 The main source file contains a simple display similar to the above figure using a size variable but displays unique tile ids. The current size value is set to five but it can be raise or lowered. Note that if you do *increase* the size variable, be sure to change the display function by increasing the spaces and :4 in the println macros to a larger value for ideal aesthetics.
 
-## Local Movement
+## 3. Local Movement
 The algorithm for tile movement is a series of conditional checks for special cases for face changes and a base case for when the movement remains inside the same face.
 ### Base Case
 Basic directional movement within a face is done by operating on index locations. There are checks to handle movement based on three axes, labeled X, Y, and Z, in both positive and negative directions. The axes are named clockwise starting with Positive X being perpendicular to the equator, which is roughly north. The axes of movement are as shown below:
@@ -163,10 +163,10 @@ The last face change is over the edge of one triangle to the other. This can hap
          /  \    ←    /  \   
       /  \-Z/  \ ← /  \##/  \
 Figure 3.10) Moving across the upper face side. Top: Movement across the +Y side over a vertex. Second: Movement across the -Z side over a vertex. Third: Movement across the +Y side over a edge. Second: Movement across the -Z side over a edge.
-## Walking The Octahedron
+## 4. Walking The Octahedron
 Thinking of a walking, driving or any other surface movement, on a sphere, if something were to just pick a direction on a sphere and travel it continuously, the object should return to it's original location, facing the same direction it started. That is walking is repeatedly taking step after step so the step function continuously called on it's own output should represent walking the sphere.
 ### Chaining Steps
-The original creation of the step function took and tiled id and direction but only returned a new tile id so in order to facilitate direction changes and chain the input and output were both changed to a tuple of tile id and direction. The input represent choosing a tile and then stepping in a certain direction while the output is the resulting tile id and the orientation from which one arrived. This allows the step to be called again and again and again. The base case, that is when the step remains in the same face, is the same direction that was called. Nicely enough, traveling across the vertex of an equatorial corner doesn't change the orientation either. The edge cases are where the direction that the step enters a triangle is not the same as that from which it left.
+The original creation of the step function took and tiled id and direction but only returned a new tile identifier so in order to facilitate direction changes and chain the input and output were both changed to a tuple of tile identifier and direction. The input represent choosing a tile and then stepping in a certain direction while the output is the resulting tile identifier and the orientation from which one arrived. This allows the step to be called again and again and again. The base case, that is when the step remains in the same face, is the same direction that was called. Nicely enough, traveling across the vertex of an equatorial corner doesn't change the orientation either. The edge cases are where the direction that the step enters a triangle is not the same as that from which it left.
 ### Rotating Orientation
 The crux of the return orientation is that your new axis is that from which you cross into the triangle on. To help understand this we can imagine the hexagon in which we are traveling across. First we consider a point from which a hexagon forms around as shown below.
 
@@ -225,13 +225,13 @@ The last of the orientation changes are a simple flipping of Y and Z axes when t
       /  \ ↗/  \   /  \ ↘/  \
 Figure 4.7) Top: Flat +Y to +Z. Bottom: Point +Y to +Z
 
-## Code Testing
+## 5. Code Testing
 I have always liked the idea of test driven development so before I set about writing any code, I wrote a series of black box unit test. I did not write all the test at once but rather as a series of steps. First, of course, with the step test that tested each tile on variable sizes and then wrote the code for it, running the test to make sure my conditions matched with incremental changes, one condition at a time, and I did likewise for the walking test after I had finished the step function with direction.
 ### Step Tests
 There are three tests that each check movement in every direction for all tiles of octahedrons of size 1, 2 and 3, respectively. They simply call the step function an compare it to an expected result. The hard coded comparisons were derived from lots for drawing of equilateral triangles. Since the algorithms uses values that are squared, doubled, and incremented, the tests should give confidence in the algorithms
 correctness for anything larger.
 ### Walk Tests
-The second series of tests make sure that one can circumnavigate the octahedron. This is done by a simple while loop that stops when it returns to the start position and checks that last return value was the same as the start value, both for tile id and direction. Admittedly, having a potentially infinite loop for a quiet test is not the smartest idea but, since I got really got at drawing equilateral triangles, it worked. At some point I should give it a guard that panics after a number of moves.
+The second series of tests make sure that one can circumnavigate the octahedron. This is done by a simple while loop that stops when it returns to the start position and checks that last return value was the same as the start value, both for tile identifier and direction. Admittedly, having a potentially infinite loop for a quiet test is not the smartest idea but, since I got really got at drawing equilateral triangles, it worked. At some point I should give it a guard that panics after a number of moves.
 
-## Future Plans
+## 6. Future Plans
 Did I mention spheres? There really is nothing spherical about it at the moment. The next step would be to correct this and implement a spherical coordinate mapping of each tile centroid. This should be fairly easy since each face covers a half radian arc of both the inclination and azimuth.
