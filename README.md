@@ -31,7 +31,7 @@ Here we can see that moving through the triangles from 1 to 7 lies on the same a
         /0\
       /1\2/3\
     /4\5/6\7/8\
-Figure 1.1) A equilateral triangle subdivided into equilateral triangles.
+Figure 1.2) A equilateral triangle subdivided into equilateral triangles.
 
 This triangle can then form one of the eight faces of an octahedron. While this isn't a perfect mapping, it has some niceties in regards to local movement along the axes. Each corner vertex loses two triangles in the hexagon that would form around it (note that this actually forms a square at the points of distortion) but since they are the two triangles that don't correlate with the axial movements, they can be safely disregarded.
 ## 2. The Octahedron
@@ -47,7 +47,7 @@ Where each row represents the faces of a pyramid that wrap around from 3 to 0, o
       /1\2/3\  /1\2/3\  /1\2/3\  /1\2/3\
       \3/2\1/  \3/2\1/  \3/2\1/  \3/2\1/
         \0/      \0/      \0/      \0/  
-Figure 2.1) Face indices relative to side.
+Figure 2.2) Face indices relative to side.
 
 This inversion of the lower faces can also be seen as bending the array in half, or a rotation one radian, allowing the movement algorithm to simply invert directions for the lower faces.
 
@@ -223,7 +223,7 @@ The last of the orientation changes are a simple flipping of Y and Z axes when t
 ---
          /  \ _ _ _ _ /  \   
       /  \ ↗/  \   /  \ ↘/  \
-Figure 4.7) Top: Flat +Y to +Z. Bottom: Point +Y to +Z
+Figure 4.6) Top: Flat +Y to +Z. Bottom: Point +Y to +Z
 
 ## 5. Code Testing
 I have always liked the idea of test driven development so before I set about writing any code, I wrote a series of black box unit test. I did not write all the test at once but rather as a series of steps. First, of course, with the step test that tested each tile on variable sizes and then wrote the code for it, running the test to make sure my conditions matched with incremental changes, one condition at a time, and I did likewise for the walking test after I had finished the step function with direction.
