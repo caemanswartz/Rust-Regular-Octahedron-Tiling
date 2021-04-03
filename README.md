@@ -6,8 +6,8 @@ The purpose of this code is to dynamically tile a sphere using an octahedron who
 3. [Local Movement](#Local-Movement)
     - [Base Case](#Base-Case)
     - [Changing Face](#Changing-Face)
-       - [Pole Movement](#Pole-Movement)
-       - [Equatorial Corner](#Equatorial-Corner)
+       - [Polar Corners](#Polar-Corners)
+       - [Equatorial Corners](#Equatorial-Corner)
        - [Equatorial Crossing](#Equatorial-Crossing)
        - [Side Crossing](#Side-Crossing)
 4. [Walking the Octahedron](#Walking-the-Octahedron)
@@ -96,9 +96,9 @@ And the next shows double distance moves for both halves.
 Figure 3.3) Upper and lower face double moves.
 
 ### Changing Face
-If movement is not within the same face, the new face has to be calculated as well. Since there is always a fixed number of faces in an octahedron, this is hard coded in match statements. There are four different kinds of face changes: pole movement,equatorial corners, equatorial crossing, and side crossing, the former two of which are around points of distortion.
+If movement is not within the same face, the new face has to be calculated as well. Since there is always a fixed number of faces on an octahedron, this is hard coded in match statements. There are four different kinds of face changes: polar corners,equatorial corners, equatorial crossing, and side crossing, the former two of which are around points of distortion.
 
-#### Polar Movement
+#### Polar Corners
 Changing faces around the polar corner in simple and straightforward, there are three cases: positive X, positive Y, and negative Z. Every face change from one pole will land on another pole and the only calculations required are which face to change to. The following shows the defined movement for north pole.
 
       \18/
@@ -166,26 +166,26 @@ Figure 3.10) Moving across the upper face side. Top: Movement across the +Y side
 ## Walking The Octahedron
 Thinking of a walking, driving or any other surface movement, on a sphere, if something were to just pick a direction on a sphere and travel it continuously, the object should return to it's original location, facing the same direction it started. That is walking is repeatedly taking step after step so the step function continuously called on it's own output should represent walking the sphere.
 ### Chaining Steps
-The original creation of the step function took and tiled id and direction but only returned a new tile id so in order to facilitate direction changes and chain the input and out put were both changed to a tuple of tile id and direction. The input represent choosing a tile and then stepping in a certain direction while the output is the resulting tile id and the orientation from which one arrived. This allows the step to be called again and again and again. The base case, that is when the step remains in the same face, is the same direction that was called. Nicely enough, traveling across the vertex of an equatorial corner doesn't change the orientation either. The edge cases are where the direction that the step enters a triangle is not the same as that from which it left using.
+The original creation of the step function took and tiled id and direction but only returned a new tile id so in order to facilitate direction changes and chain the input and output were both changed to a tuple of tile id and direction. The input represent choosing a tile and then stepping in a certain direction while the output is the resulting tile id and the orientation from which one arrived. This allows the step to be called again and again and again. The base case, that is when the step remains in the same face, is the same direction that was called. Nicely enough, traveling across the vertex of an equatorial corner doesn't change the orientation either. The edge cases are where the direction that the step enters a triangle is not the same as that from which it left.
 ### Rotating Orientation
-The crux of the return orientation is that your new axis is that from which you cross into the triangle on. To help understand this we can image the hexagon in which we are traveling across. First we consider a point from which a hexagon forms around as shown below.
+The crux of the return orientation is that your new axis is that from which you cross into the triangle on. To help understand this we can imagine the hexagon in which we are traveling across. First we consider a point from which a hexagon forms around as shown below.
 
          / ↘\._ _ _ _./ ↙\   
       /  \ ↗/ ↑\   / ↑\ ↖/  \
 ---
-         / ↘\.↓/ ↙\  /
-      /  \ ↗/ ↑\ ↖/   
+         / ↘\.↙/ ↖\  /
+      /  \ ↗/ ↑\ ↑/   
 Figure 4.1) All directions to the same point on an edge. Top: Viewing the point on separate faces, note that both dots are the same point. Bottom: Viewing the point as the center of a single hexagon.
 
-Each arrow in the figure above shows the direction that leads to that point. If you were to take those steps around that point the resulting orientation would be the opposite direction on the other face.
+Each arrow in the figure above shows the direction that leads to that point. The bottom hexagon is formed by rotating the left triangle one third of a radian. We can see the first two top rows are polar corners. If you were to take those steps around that point the resulting orientation would be the opposite direction on the arriving tile.
 
 The other set of cases happen when you travel across a side, as seen in the following figure. Here we can see than we simply switch the Y and Z axis.
 
          / ↗\. - - - ./ ↖\   
       /  \  / ↗\ - / ↖\  /  \
 ---
-         / ↗\.↙/  \  /
-      /  \  / ↗\ ↙/   
+         / ↗\.↖/  \  /
+      /  \  / ↗\ ↖/   
 Figure 4.2) Direction change across the side. Top: Viewing the sides on separate faces, note that both dots are the same point. Bottom: Viewing the sides as part of a single hexagon.
 #### Changing Face Along and to X
 Orientation change around the X axis can be both the simplest and the most complicated. Starting with the simplest, movement directly across the poles is simply flipping from positive X to negative X or vise versa.
